@@ -81,7 +81,7 @@ export class Animation {
 
   private addLights(): void {
     {
-      const color = this.theme === "dark" ? 0xffffff : 0x0a0a0a;
+      const color = 0x0a0a0a;
       const intensity = 2.5;
       this.directionalLight = new THREE.DirectionalLight(color, intensity);
       this.directionalLight.position.set(10, 10, 10);
@@ -91,7 +91,7 @@ export class Animation {
     }
 
     {
-      const skyColor = this.theme === "dark" ? 0xffffff : 0x0a0a0a;
+      const skyColor = 0xffffff;
       const groundColor = 0xb97a20;
       const intensity = 2;
       this.hemisphereLight = new THREE.HemisphereLight(
