@@ -1,12 +1,20 @@
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
+
+type AnimationTheme = "dark" | "light";
+
+const DEFAULT_THEME: AnimationTheme = "light";
 
 export class Animation {
   private width: number;
   private height: number;
+  private theme: AnimationTheme = "light";
   protected scene: THREE.Scene;
   protected camera: THREE.PerspectiveCamera;
   protected renderer: THREE.WebGLRenderer;
   protected geometries: THREE.Mesh[] = [];
+  protected directionalLight: THREE.DirectionalLight | undefined;
+  protected hemisphereLight: THREE.HemisphereLight | undefined;
 
   constructor(el: HTMLDivElement) {
     this.width = window.innerWidth / 2;
@@ -14,7 +22,7 @@ export class Animation {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(
-      75,
+      50,
       this.width / this.height,
       0.1,
       1000
@@ -26,7 +34,39 @@ export class Animation {
 
     el.appendChild(this.renderer.domElement);
 
-    this.camera.position.z = 5;
+    this.camera.position.set(0, 9, 15);
+    this.camera.rotation.set(75, 0, 0);
+
+    this.addModel();
+    this.addLights();
+    this.setTheme(DEFAULT_THEME);
+  }
+
+  public setTheme(theme: AnimationTheme): void {
+    let backgroundColor = 0x000000;
+
+    if (theme === "dark") {
+      backgroundColor = 0x0a0a0a;
+    }
+
+    if (theme === "light") {
+      backgroundColor = 0xffffff;
+    }
+
+    this.theme = theme;
+    this.scene.background = new THREE.Color(backgroundColor);
+
+    if (this.directionalLight) {
+      this.directionalLight.color = new THREE.Color(
+        this.theme === "dark" ? 0xffffff : 0x0a0a0a
+      );
+    }
+
+    if (this.hemisphereLight) {
+      this.hemisphereLight.color = new THREE.Color(
+        this.theme === "dark" ? 0x0a0a0a : 0xffffff
+      );
+    }
   }
 
   private animate(): void {
@@ -39,26 +79,35 @@ export class Animation {
     this.renderer.render(this.scene, this.camera);
   }
 
-  public addGeometry(): void {
-    const getR = (base: number): number => {
-      const min = -base;
-      const max = base;
-      const r  = Math.random() * (max - min) + min;
-      return (r === 0) ? getR(base) : r;
+  private addLights(): void {
+    {
+      const color = this.theme === "dark" ? 0xffffff : 0x0a0a0a;
+      const intensity = 2.5;
+      this.directionalLight = new THREE.DirectionalLight(color, intensity);
+      this.directionalLight.position.set(10, 10, 10);
+      this.directionalLight.target.position.set(-6, 0, -9);
+      this.scene.add(this.directionalLight);
+      this.scene.add(this.directionalLight.target);
     }
 
-    const side = getR(2);
-    const geometry = new THREE.BoxGeometry(side, side, side);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+    {
+      const skyColor = this.theme === "dark" ? 0xffffff : 0x0a0a0a;
+      const groundColor = 0xb97a20;
+      const intensity = 2;
+      this.hemisphereLight = new THREE.HemisphereLight(
+        skyColor,
+        groundColor,
+        intensity
+      );
+      this.scene.add(this.hemisphereLight);
+    }
+  }
 
-    cube.position.x = getR(2);
-    cube.position.y = getR(2);
-    cube.position.z = getR(2);
-
-    this.geometries.push(cube);
-    this.scene.add(cube);
-    this.renderer.render(this.scene, this.camera);
+  private addModel() {
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load("./room/scene.gltf", (gltfScene) => {
+      gltfScene.scene.rotateY(-0.75);
+      this.scene.add(gltfScene.scene);
+    });
   }
 }
-
