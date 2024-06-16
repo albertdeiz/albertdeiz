@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Linkedin, Github } from "lucide-react";
-import { Model } from "./components/model";
+import { MainAnimation } from "./components/main-animation";
 
 export const HomePage = () => {
   return (
-    <main className="w-full min-h-screen flex flex-col justify-center">
+    <main className="relative w-full min-h-screen flex flex-col justify-center">
+      <div className="absolute w-full h-full top-0 left-0">
+        <MainAnimation />
+      </div>
       <div className="max-w-7xl px-8 mx-auto">
         <div className="flex-wrap md:flex-nowrap flex h-full items-center justify-center">
-          <section className="flex flex-col w-full md:w-1/2">
+          <section className="relative flex flex-col w-full md:w-1/2">
             <h1 className="text-4xl font-thin text-primary mb-4 leading-snug">
               Hey there, I'm <strong className="font-normal">Albert</strong>,
               <br />A{" "}
@@ -44,9 +47,7 @@ export const HomePage = () => {
               </Button>
             </div>
           </section>
-          <section className="w-full md:w-1/2">
-            <Model />
-          </section>
+          <section className="w-full md:w-1/2" />
         </div>
       </div>
     </main>
