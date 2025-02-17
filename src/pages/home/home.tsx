@@ -27,7 +27,7 @@ export const HomePage = () => {
             <div className="flex gap-4">
               <Button asChild>
                 <a
-                  href="http://linkedin.com/in/aado29"
+                  href="http://linkedin.com/in/albertdeiz/"
                   target="_blank"
                   rel="noreferrer"
                 >
