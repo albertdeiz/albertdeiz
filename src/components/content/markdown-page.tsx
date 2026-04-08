@@ -1,4 +1,5 @@
 import Markdown from "react-markdown";
+import remarkGfm from 'remark-gfm';
 import type { ReactElement, ComponentProps } from "react";
 
 const components = {
@@ -91,7 +92,7 @@ export const MarkdownPage = ({ content }: MarkdownPageProps): ReactElement => {
   return (
     <main className="min-h-screen bg-background py-16 px-8">
       <article className="max-w-3xl mx-auto">
-        <Markdown components={components}>{content}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} components={components}>{content}</Markdown>
       </article>
     </main>
   );
